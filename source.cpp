@@ -9,7 +9,7 @@ void who_wc()
     int pipe2[2];
     int pipe3[2];
     pipe(pipe1);
-
+    pipe(pipe2);
     if (!fork())
     {
         if (!fork())
