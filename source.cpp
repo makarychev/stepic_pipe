@@ -36,12 +36,17 @@ void who_wc()
         }
     } else
     {
+        char path[] = "//home//box//result.out";
+        FILE* file = fopen(path, "w");
         close(STDIN_FILENO);
+        close(STDOUT_FILENO);
         dup2(pipe2[0], STDIN_FILENO);
+        dup2(fileno(file), STDOUT_FILENO);
         close(pipe1[0]);
         close(pipe1[1]);
         close(pipe2[0]);
         close(pipe2[1]);
+        fclose(file);
         execlp("wc", "wc", "-l", NULL);
     }
 }
