@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+
 void pipe_solution()
 {
   char path[] = "//home//box//result.out";
@@ -12,10 +13,8 @@ void pipe_solution()
   {
     FILE* fexec = popen(command, "r");
     FILE* fout = fopen(path, "w");
-    int len = read(fexec, result, sizeof(result));
-    write(fout, result, len);
-    // dup2(fileno(fexec), STDIN_FILENO);
-    // dup2(fileno(fout), STDOUT_FILENO);
+    int len = fread(result, 1, sizeof(result), fexec);
+    int res = fwrite(result, 1, len, fout);
     pclose(fexec);
     fclose(fout);
   }
