@@ -2,6 +2,7 @@
 #include <sys/stat.h> /* For mode constants */
 #include <fcntl.h> /* For O_* constants */
 #include <string.h>
+#include <unistd.h> // ftruncate
 
 void test()
 {
