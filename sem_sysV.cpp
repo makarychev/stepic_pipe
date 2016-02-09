@@ -1,7 +1,7 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/sem.h>
-
+                                                           
 union semun {
             int val;
             struct semid_ds *buf;
@@ -16,7 +16,7 @@ void test_sem_sysV()
     for (int i = 0; i < arrSize; i++)
     {
         arg.val = i;
-        semctl(sem_id, i, SETVAL,);
+        semctl(sem_id, i, SETVAL, arg);
     }
 }
 
