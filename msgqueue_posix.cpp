@@ -14,11 +14,11 @@ void mq_test()
         attr.mq_curmsgs = 0;
         mode_t mode = S_IRUSR | S_IWUSR |S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
         mqd_t mq_id = mq_open("/test.mq", O_RDWR | O_CREAT, mode, &attr);
-        char buff[255] = {0};
+        char buff[64] = {0};
         struct timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         ts.tv_sec += 120;
-        int size = mq_timedreceive(mq_id, buff, sizeof(buff), NULL, &ts);
+        int size = mq_timedreceive(mq_id, buff, 64, NULL, &ts);
         if (size > 0)
         {
                 FILE* file = fopen("//home//box//message.txt", "w");
