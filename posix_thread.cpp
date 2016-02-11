@@ -1,8 +1,10 @@
 #include <pthread.h> // Compile and link with -pthread.
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <errno.h>
 
 #define handle_error_en(en, msg) \
         do { errno = en; perror(msg); exit(EXIT_FAILURE); } while (0)
@@ -10,7 +12,7 @@
 #define handle_error(msg) \
         do { perror(msg); exit(EXIT_FAILURE); } while (0)
 
-void* thread_func(void * arg)
+static void* thread_func(void * arg)
 {
   int *int_value = (int *)arg;
   pid_t pid = getpid();
@@ -19,18 +21,19 @@ void* thread_func(void * arg)
   if (len <= 0)
     printf("fprintf len error\n");
   fclose(file);
-  while ((*arg) != 10000)
+  while ((*int_value) != 10000)
   {
      (*int_value)++;
      usleep(10);
   }
-  returnt arg;
+  return arg;
 }
 
 int main(int argc, char const *argv[]) {
   pthread_t threadId;
   pthread_attr_t attr;
-  int arg = 0;
+  int s, arg = 0;
+  int stack_size = 1024;
   void *res;
 
   s = pthread_attr_init(&attr);
@@ -42,7 +45,7 @@ int main(int argc, char const *argv[]) {
        handle_error_en(s, "pthread_attr_setstacksize");
   }
 
-  s = pthread_create(&threadId, NULL, void *(*thread_func)(void*), (void *)&arg);
+  s = pthread_create(&threadId, &attr, &thread_func, (void *)&arg);
   if (s != 0)
       handle_error_en(s, "pthread_attr_destroy");
 
