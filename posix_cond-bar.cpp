@@ -70,7 +70,7 @@ int main(int argc, char const *argv[]) {
 
   pthread_mutex_lock(&m_mutex);
 
-  s = pthread_create(&thread_waitBarrier, &attr, &thread_waitCondition, (void *)&arg);
+  s = pthread_create(&threadWaitCond, &attr, &thread_waitCondition, (void *)&arg);
   if (s != 0)
       handle_error_en(s, "pthread_create thread_waitCondition");
   s = pthread_create(&threadWaitBarrier, &attr, &thread_waitBarrier, (void *)&arg);
@@ -81,9 +81,9 @@ int main(int argc, char const *argv[]) {
   if (s != 0)
      handle_error_en(s, "pthread_attr_destroy");
 
-  s = pthread_join(thread_waitBarrier, &res);
+  s = pthread_join(threadWaitCond, &res);
   if (s != 0)
-    handle_error_en(s, "thread_waitBarrier");
+    handle_error_en(s, "threadWaitCond");
   s = pthread_join(threadWaitBarrier, &res);
   if (s != 0)
     handle_error_en(s, "threadWaitBarrier");
