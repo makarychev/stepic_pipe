@@ -60,7 +60,7 @@ static void* thread_waitWrMutex(void * arg)
 {
   int *int_value = (int *)arg;
 
-  pthread_rwlock_wrdlock(&m_rwlock);
+  pthread_rwlock_wrlock(&m_rwlock);
   (*int_value)++;
   pthread_rwlock_unlock(&m_rwlock);
   return arg;
@@ -79,7 +79,7 @@ int main(int argc, char const *argv[]) {
 
   pthread_mutex_init(&m_mutex, NULL);
   pthread_spin_init(&m_spinlock, PTHREAD_PROCESS_SHARED);
-  pthread_rwlock_init(&m_mutex, NULL);
+  pthread_rwlock_init(&m_rwlock, NULL);
 
   WritePIDtoFile();
   s = pthread_attr_init(&attr);
@@ -94,21 +94,21 @@ int main(int argc, char const *argv[]) {
   pthread_mutex_lock(&m_mutex);
   pthread_spin_lock(&m_spinlock);
   pthread_rwlock_rdlock(&m_rwlock);
-  pthread_rwlock_wrdlock(&m_rwlock);
+  pthread_rwlock_wrlock(&m_rwlock);
 
 
-  s = pthread_create(&threadWaitMutex, &attr, &thread_func, (void *)&arg);
+  s = pthread_create(&threadWaitMutex, &attr, &thread_waitMutex, (void *)&arg);
   if (s != 0)
       handle_error_en(s, "pthread_create threadWaitMutex");
-  s = pthread_create(&threadWaitSpinMutex, &attr, &thread_func, (void *)&arg);
+  s = pthread_create(&threadWaitSpinMutex, &attr, &thread_waitSpinMutex, (void *)&arg);
   if (s != 0)
       handle_error_en(s, "pthread_create threadWaitSpinMutex");
-  s = pthread_create(&threadWaitRdMutex, &attr, &thread_func, (void *)&arg);
+  s = pthread_create(&threadWaitRdMutex, &attr, &thread_waitRdMutex, (void *)&arg);
   if (s != 0)
-      handle_error_en(s, "pthread_create threadWaitSpinMutex");
-  s = pthread_create(&threadWaitWrMutex, &attr, &thread_func, (void *)&arg);
+      handle_error_en(s, "pthread_create threadWaitRdMutex");
+  s = pthread_create(&threadWaitWrMutex, &attr, &thread_waitWrMutex, (void *)&arg);
   if (s != 0)
-      handle_error_en(s, "pthread_create threadWaitSpinMutex");
+      handle_error_en(s, "pthread_create threadWaitWrMutex");
 
   s = pthread_attr_destroy(&attr);
   if (s != 0)
@@ -116,16 +116,16 @@ int main(int argc, char const *argv[]) {
 
   s = pthread_join(threadWaitMutex, &res);
   if (s != 0)
-    handle_error_en(s, "pthread_join");
+    handle_error_en(s, "threadWaitMutex");
   s = pthread_join(threadWaitSpinMutex, &res);
   if (s != 0)
-    handle_error_en(s, "pthread_join");
+    handle_error_en(s, "threadWaitSpinMutex");
   s = pthread_join(threadWaitRdMutex, &res);
   if (s != 0)
-    handle_error_en(s, "pthread_join");
+    handle_error_en(s, "threadWaitRdMutex");
   s = pthread_join(threadWaitWrMutex, &res);
   if (s != 0)
-    handle_error_en(s, "pthread_join");
+    handle_error_en(s, "threadWaitWrMutex");
 
   pthread_mutex_unlock(&m_mutex);
   pthread_spin_unlock(&m_spinlock);
